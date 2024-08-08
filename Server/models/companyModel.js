@@ -22,9 +22,9 @@ const companySchema = new mongoose.Schema({
         type: String,
         require: true
     },
-    jobsId: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "job"
+    jobnames: {
+        type: [String],
+        default: []
     },
     createdAt: {
         type: Date,

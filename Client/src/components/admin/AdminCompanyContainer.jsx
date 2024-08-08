@@ -2,14 +2,20 @@ import { useState } from "react";
 import { Container, Row, Col, Table, Modal } from "react-bootstrap";
 import { IoIosAddCircleOutline } from "react-icons/io";
 import CompanyRegistrationForm from "./CompanyRegistrationForm";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import { deleteCompany } from "../../redux/admin/adminThunk";
 
 function AdminCompanyContainer() {
   const [show, setShow] = useState(false);
-  const companyData = useSelector((state) => state.admin.companyData);
+  const companyData = useSelector((state) => state.admin.companyData) || [];
+  const dispatch = useDispatch()
 
   const handleClose = () => setShow(false);
-  const handleShow = () => setShow(true);
+  const handleShow = () => setShow(true); 
+
+  const handleDelete = (companyName) => {
+    dispatch(deleteCompany({companyName}))
+  }
 
   return (
     <>
@@ -51,7 +57,7 @@ function AdminCompanyContainer() {
                     <td>{company.industry}</td>
                     <td>
                       <button className="btn btn-primary">Edit</button>
-                      <button className="btn btn-danger ms-2">Delete</button>
+                      <button className="btn btn-danger ms-2" onClick={()=>handleDelete(company.name)}>Delete</button>
                     </td>
                   </tr>
                 ))

@@ -6,6 +6,9 @@ const { verifyToken } = require("../helpers/jwtConfig")
 
 Router.post('/', adminController.adminLogin)
 Router.post('/company-registration', verifyToken, adminController.companyRegistration)
+Router.post('/job-registration', verifyToken, adminController.jobRegistration)
+Router.delete('/delete-job', verifyToken, adminController.deleteJob)
+Router.delete('/delete-company', verifyToken, adminController.deleteCompany)
 
 
 module.exports = Router;

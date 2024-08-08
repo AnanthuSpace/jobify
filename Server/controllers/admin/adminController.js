@@ -2,6 +2,7 @@ const dotenv = require("dotenv");
 dotenv.config();
 const { generateAccessToken } = require("../../helpers/jwtConfig");
 const Company = require('../../models/companyModel')
+const Jobs = require('../../models/jobModel')
 
 
 const adminLogin = async (req, res) => {
@@ -32,8 +33,9 @@ const adminLogin = async (req, res) => {
             const accessToken = adminAccessToken;
 
             const companyData = await Company.find({}, { _id: 0 })
+            const jobData = await Jobs.find()
 
-            return res.status(200).json({ success: true, message: "Login successful", accessToken, companyData });
+            return res.status(200).json({ success: true, message: "Login successful", accessToken, companyData, jobData });
         } else {
             return res.status(403).json({ success: false, message: "Invalid Username or Password" });
         }
@@ -74,7 +76,90 @@ const companyRegistration = async (req, res) => {
 }
 
 
+const jobRegistration = async (req, res) => {
+    try {
+        console.log(req.body);
+
+        const { title, description, location, requirements, skills, companyName } = req.body;
+
+        const updateCompanyJob = await Company.updateOne(
+            { name: companyName },
+            { $addToSet: { jobnames: title } }
+        );
+        console.log(updateCompanyJob);
+
+        const newJob = new Jobs({
+            title: title,
+            description: description,
+            location: location,
+            requirements: requirements,
+            skills: skills,
+            companyName: companyName,
+            createdOn: new Date(),
+        });
+
+        const responds = await newJob.save();
+        const jobData = await Jobs.find();
+        if (responds) {
+            return res.status(200).json({ success: true, message: "Registration successful", jobData });
+        }
+    } catch (error) {
+        console.error(error);
+        return res.status(500).json({ success: false, message: "Internal server error" });
+    }
+};
+
+const deleteJob = async (req, res) => {
+    try {
+        const { id ,name } = req.params;
+
+        const deletedJob = await Jobs.findByIdAndDelete(id);
+
+        if (!deletedJob) {
+            return res.status(404).json({ success: false, message: "Job not found" });
+        }
+
+        await Company.updateMany(
+            { jobnames: name },
+            { $pull: { jobnames: name } }
+        );
+
+        return res.status(200).json({ success: true, message: "Job deleted successfully" });
+    } catch (error) {
+        console.error(error);
+        return res.status(500).json({ success: false, message: "Internal server error" });
+    }
+};
+
+
+
+const deleteCompany = async (req, res) => {
+    try {
+        const { companyName } = req.params;
+
+        const deletedCompany = await Company.findOneAndDelete({ name: companyName });
+
+        if (!deletedCompany) {
+            return res.status(404).json({ success: false, message: "Company not found" });
+        }
+
+        await Jobs.deleteMany({ companyName: companyName });
+
+        return res.status(200).json({
+            success: true,
+            message: "Company and associated jobs deleted successfully",
+        });
+    } catch (error) {
+        console.error(error);
+        return res.status(500).json({ success: false, message: "Internal server error" });
+    }
+};
+
+
 module.exports = {
     adminLogin,
-    companyRegistration
+    companyRegistration,
+    jobRegistration,
+    deleteJob,
+    deleteCompany
 }
