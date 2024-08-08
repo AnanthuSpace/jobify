@@ -156,10 +156,35 @@ const deleteCompany = async (req, res) => {
 };
 
 
+const editCompany = async (req, res) => {
+    try {
+        const { name, description, location, website, industry } = req.body;
+
+        const updatedCompany = await Company.findOneAndUpdate(
+            { name: name },
+            { description, location, website, industry },
+            { new: true }
+        );
+
+        if (!updatedCompany) {
+            return res.status(404).json({ success: false, message: "Company not found" });
+        }
+
+        const companyData = await Company.find({}, { _id: 0 });
+
+        return res.status(200).json({ success: true, message: "Company updated successfully", companyData });
+    } catch (error) {
+        console.error(error);
+        return res.status(500).json({ success: false, message: "Internal server error" });
+    }
+};
+
+
 module.exports = {
     adminLogin,
     companyRegistration,
     jobRegistration,
     deleteJob,
-    deleteCompany
+    deleteCompany,
+    editCompany
 }

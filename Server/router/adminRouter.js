@@ -9,6 +9,7 @@ Router.post('/company-registration', verifyToken, adminController.companyRegistr
 Router.post('/job-registration', verifyToken, adminController.jobRegistration)
 Router.delete('/delete-job', verifyToken, adminController.deleteJob)
 Router.delete('/delete-company', verifyToken, adminController.deleteCompany)
+Router.delete('/edit-company', verifyToken, adminController.editCompany)
 
 
 module.exports = Router;

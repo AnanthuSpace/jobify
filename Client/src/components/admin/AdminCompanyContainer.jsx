@@ -4,9 +4,12 @@ import { IoIosAddCircleOutline } from "react-icons/io";
 import CompanyRegistrationForm from "./CompanyRegistrationForm";
 import { useDispatch, useSelector } from "react-redux";
 import { deleteCompany } from "../../redux/admin/adminThunk";
+import EditCompany from "./EditCompany";
 
 function AdminCompanyContainer() {
   const [show, setShow] = useState(false);
+  const [editShow, setEditShow] = useState(false);
+  const [selectedCompany, setSelectedCompany] = useState(null); 
   const companyData = useSelector((state) => state.admin.companyData) || [];
   const dispatch = useDispatch()
 
@@ -16,6 +19,13 @@ function AdminCompanyContainer() {
   const handleDelete = (companyName) => {
     dispatch(deleteCompany({companyName}))
   }
+
+  const handleEditShow = (company) => {
+    setSelectedCompany(company);
+    setEditShow(true);
+  };
+
+  const handleEditClose = () => setEditShow(false);
 
   return (
     <>
@@ -56,8 +66,18 @@ function AdminCompanyContainer() {
                     <td>{company.website}</td>
                     <td>{company.industry}</td>
                     <td>
-                      <button className="btn btn-primary">Edit</button>
-                      <button className="btn btn-danger ms-2" onClick={()=>handleDelete(company.name)}>Delete</button>
+                      <button
+                        className="btn btn-primary"
+                        onClick={() => handleEditShow(company)}
+                      >
+                        Edit
+                      </button>
+                      <button
+                        className="btn btn-danger ms-2"
+                        onClick={() => handleDelete(company.name)}
+                      >
+                        Delete
+                      </button>
                     </td>
                   </tr>
                 ))
@@ -72,6 +92,12 @@ function AdminCompanyContainer() {
           </Table>
         </Row>
       </Container>
+
+      <EditCompany
+        show={editShow}
+        handleClose={handleEditClose}
+        company={selectedCompany}
+      />
 
       <Modal show={show} onHide={handleClose}>
         <Modal.Header closeButton>

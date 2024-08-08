@@ -104,7 +104,7 @@ export const jobRegistration = createAsyncThunk(
 
 export const deleteJob = createAsyncThunk(
   "adminSlice/deleteJob",
-  async ({ id , name}, { rejectWithValue }) => {
+  async ({ id, name }, { rejectWithValue }) => {
     try {
       const response = await adminAxiosInstance.delete(`${localhostURL}/admin/delete-job`, { id, name })
       return response.data;
@@ -125,3 +125,16 @@ export const deleteCompany = createAsyncThunk(
     }
   }
 )
+
+
+export const updateCompany = createAsyncThunk(
+  'admin/updateCompany',
+  async (companyData, { rejectWithValue }) => {
+    try {
+      const response = await axios.put(`${localhostURL}/admin/edit-company`, { companyData });
+      return response.data;
+    } catch (error) {
+      return rejectWithValue(error.response.data);
+    }
+  }
+);

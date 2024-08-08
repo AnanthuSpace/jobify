@@ -7,12 +7,17 @@ import DashboardLayout from './components/admin/DashboardLayout';
 import AdminProtector from './components/protector/AdminProtector';
 import LoginProtector from './components/protector/LogingProtector';
 import './App.css';
+import LandingPage from './components/user/LandingPage';
 
 function App() {
   return (
     <Router>
       <ToastContainer />
       <Routes>
+
+        <Route path="/" element={<LandingPage/>} />
+
+        {/* Admin Routes */}
         <Route path="/admin" element={<LoginProtector><AdminLogin /></LoginProtector>} />
         <Route path="/admin/home" element={<AdminProtector><DashboardLayout /></AdminProtector>} />
       </Routes>
