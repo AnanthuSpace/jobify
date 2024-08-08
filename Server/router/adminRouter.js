@@ -1,11 +1,11 @@
 const express = require("express")
 const Router = express.Router()
 const adminController = require('../controllers/admin/adminController')
+const { verifyToken } = require("../helpers/jwtConfig")
 
 
 Router.post('/', adminController.adminLogin)
-// Router.post('/login', Controller.loginPost)
-// Router.post('/editProfile',upload.single("newImage"),Controller.editProfile)
-// Router.get('/fetchuser', Controller.fetchUserData)
+Router.post('/company-registration', verifyToken, adminController.companyRegistration)
+
 
 module.exports = Router;

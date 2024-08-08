@@ -1,22 +1,17 @@
-const jwt = require("jsonwebtoken")
-
+const dotenv = require('dotenv');
 dotenv.config();
+const jwt = require('jsonwebtoken');
 
 const accessTokenSecret = process.env.ACCESS_TOKEN_SECRET;
-const refreshTokenSecret = process.env.REFRESH_TOKEN_SECRET;
 const accessTokenExpire = process.env.ACCESS_TOKEN_EXPIRATION;
-const refreshTokenExpire = process.env.REFRESH_TOKEN_EXPIRATION;
 
 
-export const generateAccessToken = (userId) => {
-    return jwt.sign({ userId }, accessTokenSecret, { expiresIn: accessTokenExpire });
-}
+const generateAccessToken = (email) => {
+    return jwt.sign({ email }, accessTokenSecret, { expiresIn: accessTokenExpire, algorithm: 'HS256' });
+};
 
-export const generateRefreshToken = (userId) => {
-    return jwt.sign({ userId }, refreshTokenSecret, { expiresIn: refreshTokenExpire });
-}
 
-export const verifyToken = (req, res, next) => {
+const verifyToken = (req, res, next) => {
     const verificationHeader = req.headers.authorization;
     if (!verificationHeader) {
         return res.status(401).json({ message: 'Access denied. Access token not valid' });
@@ -27,12 +22,20 @@ export const verifyToken = (req, res, next) => {
         return res.status(401).json({ message: 'Access denied. Access token not valid' });
     }
 
-    jwt.verify(accessToken, accessTokenSecret, (err, decoded) => {
+    jwt.verify(accessToken, accessTokenSecret, { algorithms: ['HS256'] }, (err, decoded) => {
+
         if (err) {
+            console.log('JWT Verify Error:', err);
             return res.status(401).json({ message: 'Access denied. Access token not valid' });
         } else {
-            (req).id = (decoded).id;
+            req.email = decoded.email;
             next();
         }
     });
-}
+};
+
+
+module.exports = {
+    generateAccessToken,
+    verifyToken
+};

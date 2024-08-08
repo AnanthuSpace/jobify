@@ -8,9 +8,9 @@ const adminAxiosInstance = axios.create({
 adminAxiosInstance.interceptors.request.use(
     (config) => {
         const accessToken = sessionStorage.getItem("adminAccessToken");
-        const refreshToken = sessionStorage.getItem("adminRefreshToken");
+        
         if (accessToken) {
-            config.headers['Authorization'] = `Bearer ${accessToken, refreshToken}`;
+            config.headers['Authorization'] = `Bearer ${accessToken}`;
         }
         return config;
     },

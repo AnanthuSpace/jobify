@@ -1,10 +1,12 @@
-import React, { useState } from 'react';
-import { Container, Row, Col, Table, Modal, Button } from 'react-bootstrap';
+import { useState } from "react";
+import { Container, Row, Col, Table, Modal } from "react-bootstrap";
 import { IoIosAddCircleOutline } from "react-icons/io";
-import CompanyRegistrationForm from './CompanyRegistrationForm';
+import CompanyRegistrationForm from "./CompanyRegistrationForm";
+import { useSelector } from "react-redux";
 
 function AdminCompanyContainer() {
   const [show, setShow] = useState(false);
+  const companyData = useSelector((state) => state.admin.companyData);
 
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
@@ -17,7 +19,11 @@ function AdminCompanyContainer() {
             <h4>Company Management</h4>
           </Col>
           <Col className="text-end">
-            <IoIosAddCircleOutline size={30} onClick={handleShow} style={{ cursor: 'pointer' }} />
+            <IoIosAddCircleOutline
+              size={30}
+              onClick={handleShow}
+              style={{ cursor: "pointer" }}
+            />
           </Col>
         </Row>
         <Row>
@@ -25,33 +31,37 @@ function AdminCompanyContainer() {
             <thead>
               <tr>
                 <th>#</th>
-                <th>Table heading</th>
-                <th>Table heading</th>
-                <th>Table heading</th>
-                <th>Table heading</th>
-                <th>Table heading</th>
-                <th>Table heading</th>
+                <th>Name</th>
+                <th>Description</th>
+                <th>Location</th>
+                <th>Website</th>
+                <th>Industry</th>
+                <th>Actions</th>
               </tr>
             </thead>
             <tbody>
-              <tr>
-                <td>1</td>
-                <td>Table cell</td>
-                <td>Table cell</td>
-                <td>Table cell</td>
-                <td>Table cell</td>
-                <td>Table cell</td>
-                <td>Table cell</td>
-              </tr>
-              <tr>
-                <td>2</td>
-                <td>Table cell</td>
-                <td>Table cell</td>
-                <td>Table cell</td>
-                <td>Table cell</td>
-                <td>Table cell</td>
-                <td>Table cell</td>
-              </tr>
+              {companyData.length > 0 ? (
+                companyData.map((company, index) => (
+                  <tr key={company._id || index}>
+                    <td>{index + 1}</td>
+                    <td>{company.name}</td>
+                    <td>{company.description}</td>
+                    <td>{company.location}</td>
+                    <td>{company.website}</td>
+                    <td>{company.industry}</td>
+                    <td>
+                      <button className="btn btn-primary">Edit</button>
+                      <button className="btn btn-danger ms-2">Delete</button>
+                    </td>
+                  </tr>
+                ))
+              ) : (
+                <tr>
+                  <td colSpan="7" className="text-center">
+                    No companies available
+                  </td>
+                </tr>
+              )}
             </tbody>
           </Table>
         </Row>
@@ -62,7 +72,7 @@ function AdminCompanyContainer() {
           <Modal.Title>Register New Company</Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          <CompanyRegistrationForm />
+          <CompanyRegistrationForm handleClose={handleClose} />
         </Modal.Body>
       </Modal>
     </>

@@ -1,23 +1,33 @@
-import { useState } from 'react';
-import { Container, Row, Col, Form, Button } from 'react-bootstrap';
+import { useState } from "react";
+import { useDispatch } from "react-redux";
+import { Container, Row, Col, Form, Button } from "react-bootstrap";
+import { companyRegistration } from "../../redux/admin/adminThunk";
 
-function CompanyRegistrationForm() {
-  
-  const [ name, setName ] = useState("")
-  const [ discription, setDiscription ] = useState("")
-  const [ location, setLocation ] = useState("")
-  const [ website, setWebsite ] = useState("")
-  const [ industry, setIndustry ] = useState("")
+function CompanyRegistrationForm({ handleClose }) {
+  const [name, setName] = useState("");
+  const [description, setDescription] = useState("");
+  const [location, setLocation] = useState("");
+  const [website, setWebsite] = useState("");
+  const [industry, setIndustry] = useState("");
+  const dispatch = useDispatch();
 
   const handleSubmit = (e) => {
-      e.preventDefault()
-      console.log(name);
-      console.log(location);
-      console.log(discription);
-      console.log(website);
-      console.log(industry);
-      
-  }
+    e.preventDefault();
+    dispatch(
+      companyRegistration({
+        name,
+        description,
+        location,
+        website,
+        industry,
+      })
+    )
+    .then((res)=>{
+      if(res.payload.message){
+        handleClose()
+      }
+    })
+  };
 
   return (
     <Container>
@@ -31,7 +41,7 @@ function CompanyRegistrationForm() {
                 type="text"
                 name="name"
                 value={name}
-                onChange={(e)=>setName(e.target.value)}
+                onChange={(e) => setName(e.target.value)}
                 required
               />
             </Form.Group>
@@ -41,8 +51,8 @@ function CompanyRegistrationForm() {
               <Form.Control
                 type="text"
                 name="description"
-                value={discription}
-                onChange={(e)=>setDiscription(e.target.value)}
+                value={description}
+                onChange={(e) => setDescription(e.target.value)}
                 required
               />
             </Form.Group>
@@ -53,7 +63,7 @@ function CompanyRegistrationForm() {
                 type="text"
                 name="location"
                 value={location}
-                onChange={(e)=>setLocation(e.target.value)}
+                onChange={(e) => setLocation(e.target.value)}
                 required
               />
             </Form.Group>
@@ -64,7 +74,7 @@ function CompanyRegistrationForm() {
                 type="text"
                 name="website"
                 value={website}
-                onChange={(e)=>setWebsite(e.target.value)}
+                onChange={(e) => setWebsite(e.target.value)}
                 required
               />
             </Form.Group>
@@ -75,7 +85,7 @@ function CompanyRegistrationForm() {
                 type="text"
                 name="industry"
                 value={industry}
-                onChange={(e)=>setIndustry(e.target.value)}
+                onChange={(e) => setIndustry(e.target.value)}
                 required
               />
             </Form.Group>
